@@ -1,73 +1,46 @@
 #include "main.h"
 
-int _printf(const char *format, ...)
+/**
+ * _printf -  A function that selects the correct function to print.
+ * @format: An identifier to look for.
+ * Return: the length of the string.
+ */
+int _printf(const char * const format, ...)
 {
-    va_list args;
-    int a = 0;
-    
-    va_start(args, format);
-    
-    
-    while (format[a])
-    {
-         
-        if (format[a] == '%')
-        {
-            a++;
-            switch (format[a])
-            {
-                case 'd':
-                {
-                    int x = va_arg(args, int);
-                    printf("%d", x);
-                    break;
-                }
-                case 'f':
-                {
-                    double x = va_arg(args, double);
-                    printf("%f", x);
-                    break;
-                }
-                case 'c':
-                {
-                    int x = va_arg(args, int);
-                    printf("%c", x);
-                    break;
-                }
-                case 's':
-                {
-                    char *x = va_arg(args, char*);
-                    printf("%s", x);
-                    break;
-                }
-                case 'x':
-                case 'X':
-                {
-                    int x = va_arg(args, int);
-                    printf("%x", x);
-                    break;
-                }
-                case 'p':
-                {
-                    void *x = va_arg(args, void*);
-                    printf("%p", x);
-                    break;
-                }
-                case '%':
-                    putchar('%');
-                    break;
-                default:
-                    putchar(format[a]);
-                    break;
-            }
-        }
-        else
-        {
-            putchar(format[a]);
-        }
-        a++;
-    }
+	convert_match t[] = {
+		{"%s", printf_string}, {"%c", printf_char},
+		{"%%", printf_37},
+		{"%i", printf_int}, {"%d", printf_dec}, {"%r", printf_srev},
+		{"%R", printf_rot13}, {"%e", printf_bin}, {"%u", printf_unsigned},
+		{"%o", printf_oct}, {"%x", printf_hex}, {"%X", printf_HEX},
+		{"%S", printf_exclusive_string}, {"%p", printf_pointer}
+	};
 
-    va_end(args);
-    return 0;
+	va_list args;
+	int i = 0, j, len = 0;
+
+	va_start(args, format);
+	if (format == NULL || (format[0] == '%' && format[1] == '\0'))
+		return (-1);
+
+Here:
+	while (format[i] != '\0')
+	{
+		j = 13;
+		while (j >= 0)
+		{
+			if (t[j].id[0] == format[i] && t[j].id[1] == format[i + 1])
+			{
+				len += t[j].f(args);
+				i = i + 2;
+				goto Here;
+			}
+			j--;
+		}
+		_putchar(format[i]);
+		len++;
+		i++;
+	}
+	va_end(args);
+	return (len);
 }
