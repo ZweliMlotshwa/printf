@@ -5,13 +5,14 @@
  * @format: An identifier to look for.
  * Return: the length of the string.
  */
+
 int _printf(const char * const format, ...)
 {
-	convert_match t[] = {
+	convert_match m[] = {
 		{"%s", printf_string}, {"%c", printf_char},
 		{"%%", printf_37},
 		{"%i", printf_int}, {"%d", printf_dec}, {"%r", printf_srev},
-		{"%R", printf_rot13}, {"%e", printf_bin}, {"%u", printf_unsigned},
+		{"%R", printf_rot13}, {"%b", printf_bin}, {"%u", printf_unsigned},
 		{"%o", printf_oct}, {"%x", printf_hex}, {"%X", printf_HEX},
 		{"%S", printf_exclusive_string}, {"%p", printf_pointer}
 	};
@@ -29,9 +30,9 @@ Here:
 		j = 13;
 		while (j >= 0)
 		{
-			if (t[j].id[0] == format[i] && t[j].id[1] == format[i + 1])
+			if (m[j].id[0] == format[i] && m[j].id[1] == format[i + 1])
 			{
-				len += t[j].f(args);
+				len += m[j].f(args);
 				i = i + 2;
 				goto Here;
 			}
